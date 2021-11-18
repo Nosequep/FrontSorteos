@@ -1,0 +1,12 @@
+[
+    {
+        "id": "1",
+        "nombre": "Sorteo 1",
+        "descripcion": "Descripcion sorteo 1"
+    },
+    {
+        "id": "2",
+        "nombre": "Sorteo 2",
+        "descripcion": "Descripcion sorteo 2"
+    }
+]
