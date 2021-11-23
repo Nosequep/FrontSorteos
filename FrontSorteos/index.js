@@ -13,14 +13,10 @@ app.use(express.json())
 
 //routes
 app.use(express.static(__dirname));
-app.use('/api/sorteos', require('./src/routes/sorteos'));
-app.use(express.static(__dirname + "/FrontSorteos/views"));
-app.use(express.static(__dirname + "/FrontSorteos/components/crearSorteoForm.js"));
+app.use(express.static(__dirname + "views"));
 app.get('/', (req, res) => {
-    res.sendFile(__dirname+'/FrontSorteos/views/index.html');
+    res.sendFile(__dirname+'/views/index.html');
 });
-
-//console.log(__dirname + "../");
 
 //Starting the server
 app.listen(app.get('port'), () => {
