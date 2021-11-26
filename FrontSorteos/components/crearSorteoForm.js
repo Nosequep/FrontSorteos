@@ -181,7 +181,7 @@ class CrearSorteoForm extends HTMLElement {
                             "numMin": numMin.value,
                             "numMax": numMax.value,
                             "precioNumeros": precioNumeros.value,
-                            "fechaCreacion": fechaCreacion,
+                            "fechaCreacion": fechaCreacion.value,
                             "fechaSorteo": fechaSorteo.value,
                             "fechaInicioVenta": fechaInicioVenta.value,
                             "fechaFinVenta": fechaFinVenta.value,

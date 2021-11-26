@@ -28,16 +28,16 @@ class ModificarSorteoForm extends HTMLElement{
                             <input class="form-control" type="text" id="descripcion" name="descripcion" maxlength="500" >
                         </div>
                         <div class="input-group input-group-outline mb-3 w-50 is-focused">
-                            <label class="form-label" for="numMin">Número mínimo de boletos:</label>
+                            <label class="form-label" for="numMin">Número mínimo de Numeros:</label>
                             <input class="form-control" type="number" id="numMin" name="numMin" min="1" max="10000" pattern="[0-9]" value="1" required="required" onkeydown="javascript: return event.keyCode == 69 ? false : true" />
                         </div>
                         <div class="input-group input-group-outline mb-3 w-50 is-focused">
-                            <label class="form-label" for="numMax">Número máximo de boletos:</label>
+                            <label class="form-label" for="numMax">Número máximo de Numeros:</label>
                             <input class="form-control" type="number" id="numMax" name="numMax" min="1" max="10000" pattern="[0-9]" value="1" required="required" onkeydown="javascript: return event.keyCode == 69 ? false : true" />
                         </div>
                         <div class="input-group input-group-outline mb-3 w-50 is-focused">
-                            <label class="form-label" for="precioBoletos">Precio del boleto:</label>
-                            <input class="form-control" type="number" id="precioBoletos" name="precioBoletos" pattern="[0-9]" value="1"  min="1" max="10000" required onkeydown="javascript: return event.keyCode == 69 ? false : true" />
+                            <label class="form-label" for="precioNumeros">Precio del boleto:</label>
+                            <input class="form-control" type="number" id="precioNumeros" name="precioNumeros" pattern="[0-9]" value="1"  min="1" max="10000" required onkeydown="javascript: return event.keyCode == 69 ? false : true" />
                         </div>
                         <div class="input-group input-group-outline mb-3 w-50 is-focused">
                             <label class="form-label" for="fechaSorteo">Fecha sorteo:</label>
@@ -83,8 +83,24 @@ class ModificarSorteoForm extends HTMLElement{
 
 document.addEventListener('DOMContentLoaded', function() {
     fetch('http://localhost:3000/sorteo/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJQYWNvIiwiY29ycmVvIjoiMTIzNEBob3RtYWkuY29tIiwiZGlyZWNjaW9uIjoiYXNkIiwidGVsZWZvbm8iOiIxMjI0MTEzIiwiY2l1ZGFkIjoiTmFybmlhIiwiZXN0YWRvIjoiZGUgbWV4aWNvIiwic29ydGVvcyI6W119.SiUEOo9A-9FyBoOC-Pdc4I3pTUjwM3sjmYddyfieEHg/6196ad25c19acb5f185f23c0')
-  .then((response) => response.json())
-  .then((json) => console.log(json));
+    .then((response) => response.json())
+    .then((json) => {
+        let titulo = json[0].titulo;
+        let descripcion = json[0].descripcion;
+        let numMin = json[0].numMin;
+        let numMax = json[0].numMax;
+        let precioNumeros = json[0].precioNumeros;
+        let diasLimiteApartado = json[0].diasLimiteApartado;
+        let tiempoRecordatorio = json[0].tiempoRecordatorio;
+
+        this.shadowRoot.querySelector('#nombre') = titulo;
+        this.shadowRoot.querySelector('#descripcion') = descripcion;
+        this.shadowRoot.querySelector('#numMin') = numMin;
+        this.shadowRoot.querySelector('#numMax') = numMax;
+        this.shadowRoot.querySelector('#precioBoletos') = precioNumeros;
+        this.shadowRoot.querySelector('#tiempoApartado') = diasLimiteApartado;
+        this.shadowRoot.querySelector('#tiempoNotificaciones') = tiempoRecordatorio;
+    });
 
 }),false;
 
