@@ -70,6 +70,7 @@ class ModificarSorteoForm extends HTMLElement{
             </div>
         `
         this.#agregarEstilo();
+        this.#modificarSorteo()
         this.#llenarForm();
     }
 
@@ -118,6 +119,110 @@ class ModificarSorteoForm extends HTMLElement{
         }),false;
     }
 
+    #modificarSorteo() {        
+        const form = this.shadowRoot.querySelector("#formulario");
+        const btn = this.shadowRoot.querySelector("#button");
+        const titulo = this.shadowRoot.querySelector('#nombre');
+        const descripcion = this.shadowRoot.querySelector('#descripcion');
+        let numMin = this.shadowRoot.querySelector('#numMin');
+        let numMax = this.shadowRoot.querySelector('#numMax');
+        const precioNumeros = this.shadowRoot.querySelector('#precioNumeros');
+        const fechaSorteo = this.shadowRoot.querySelector('#fechaSorteo');
+        const fechaInicioVenta = this.shadowRoot.querySelector('#inicioVenta');
+        const fechaFinVenta = this.shadowRoot.querySelector('#finalVenta');
+        let diasLimiteApartado = this.shadowRoot.querySelector('#tiempoApartado');
+        let tiempoRecordatorio = this.shadowRoot.querySelector('#tiempoNotificaciones');
+        const imagen = "asdfasdf";
+        const fecha = new Date();
+        const fechaCreacion = fecha.getFullYear() + '-' + (fecha.getMonth() + 1) + '-' + fecha.getDate();
+        const estado = "vigente"
+
+
+        const validateNumbers = (numMin, numMax, diasRecordatorio, diasPeriodo) => {
+            if (numMin > numMax) {
+                alert("El número mínimo de boletos debe ser menor que el máximo")
+                return false;
+            }
+
+            if (numMin >= 10000 || numMax >= 10000 || diasRecordatorio >= 30 || diasPeriodo >= 30) {
+                return false;
+            }
+
+            if (numMin < 1 || numMax < 1 || diasRecordatorio < 1 || diasPeriodo < 1) {
+                return false;
+            }
+            return true;
+        }
+
+        const validateFechas = (fechaInicioVenta, fechaFinVenta, fechaSorteo, fechaCreacion) => {
+            if (fechaInicioVenta == "" || fechaFinVenta == "" || fechaSorteo == "" || fechaCreacion == "") {
+                return false;
+            }
+            if (fechaCreacion > fechaSorteo || fechaCreacion > fechaInicioVenta || fechaCreacion > fechaFinVenta) {
+                alert("Las fechas deben de ser superiores a la fecha actual")
+                return false;
+            }
+            if (fechaInicioVenta > fechaFinVenta) {
+                alert("La fecha de inicio de la venta debe ser anterior a la fecha final de la venta");
+                return false;
+            }
+            if (fechaSorteo < fechaFinVenta) {
+                alert("La fecha de sorteo debe ser despues a la fecha final de la venta");
+                return false;
+            }
+            return true;
+        }
+
+        const validateEmpty = (titulo, descripcion) => {
+            if (titulo.trim() === "" || descripcion.trim() === "") {
+                alert("El título y la descripción no pueden estar vacíos");
+                return false;
+            }
+            return true;
+        }
+
+        btn.addEventListener('click', function () {
+
+            const validarNumeros = validateNumbers(numMin.value, numMax.value, diasLimiteApartado.value, tiempoRecordatorio.value);
+            const validacionFechas = validateFechas(fechaInicioVenta.value, fechaFinVenta.value, fechaSorteo.value, fechaCreacion);    
+            let url = new URL(window.location.href);
+            let id = url.searchParams.get("id");      
+
+            if (validarNumeros && validacionFechas && validateEmpty(titulo.value, descripcion.value)) {
+                fetch(`http://localhost:3000/sorteo/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJQYWNvIiwiY29ycmVvIjoiMTIzNEBob3RtYWkuY29tIiwiZGlyZWNjaW9uIjoiYXNkIiwidGVsZWZvbm8iOiIxMjI0MTEzIiwiY2l1ZGFkIjoiTmFybmlhIiwiZXN0YWRvIjoiZGUgbWV4aWNvIiwic29ydGVvcyI6W119.SiUEOo9A-9FyBoOC-Pdc4I3pTUjwM3sjmYddyfieEHg/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(
+                    {
+                        "titulo": titulo.value,
+                        "descripcion": descripcion.value,
+                        "numMin": numMin.value,
+                        "numMax": numMax.value,
+                        "precioNumeros": precioNumeros.value,
+                        "fechaCreacion": fechaCreacion,
+                        "fechaSorteo": fechaSorteo.value,
+                        "fechaInicioVenta": fechaInicioVenta.value,
+                        "fechaFinVenta": fechaFinVenta.value,
+                        "diasLimiteApartado": diasLimiteApartado.value,
+                        "tiempoRecordatorio": tiempoRecordatorio.value,
+                        "imagen": imagen,
+                        "estadoSorteo": estado
+                    })
+
+                })
+                .then(response => response.json())
+                .then(function (data) { 
+                    alert("Se ha actualizado con éxito el sorteo.")
+                    form.reset();
+                }).catch(function (error) {
+                    console.warn('Something went wrong.', error);
+                });
+            }
+        });
+
+    }
 }
 
 window.customElements.define("modificar-sorteo-form", ModificarSorteoForm);
