@@ -175,29 +175,30 @@ class CrearSorteoForm extends HTMLElement {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(
-                        {
-                            "titulo": titulo.value,
-                            "descripcion": descripcion.value,
-                            "numMin": numMin.value,
-                            "numMax": numMax.value,
-                            "precioNumeros": precioNumeros.value,
-                            "fechaCreacion": fechaCreacion.value,
-                            "fechaSorteo": fechaSorteo.value,
-                            "fechaInicioVenta": fechaInicioVenta.value,
-                            "fechaFinVenta": fechaFinVenta.value,
-                            "diasLimiteApartado": diasLimiteApartado.value,
-                            "tiempoRecordatorio": tiempoRecordatorio.value,
-                            "imagen": imagen,
-                            "estadoSorteo": estado
-                        })
+                    {
+                        "titulo": titulo.value,
+                        "descripcion": descripcion.value,
+                        "numMin": numMin.value,
+                        "numMax": numMax.value,
+                        "precioNumeros": precioNumeros.value,
+                        "fechaCreacion": fechaCreacion,
+                        "fechaSorteo": fechaSorteo.value,
+                        "fechaInicioVenta": fechaInicioVenta.value,
+                        "fechaFinVenta": fechaFinVenta.value,
+                        "diasLimiteApartado": diasLimiteApartado.value,
+                        "tiempoRecordatorio": tiempoRecordatorio.value,
+                        "imagen": imagen,
+                        "estadoSorteo": estado
+                    })
+
                 })
-                    .then(response => response.json())
-                    .then(function (data) { 
-                        alert("Se ha guardado con éxito el sorteo.")
-                        form.reset();
-                    }).catch(function (error) {
-                        console.warn('Something went wrong.', error);
-                    });
+                .then(response => response.json())
+                .then(function (data) { 
+                    alert("Se ha guardado con éxito el sorteo.")
+                    form.reset();
+                }).catch(function (error) {
+                    console.warn('Something went wrong.', error);
+                });
             }
         });
     }
