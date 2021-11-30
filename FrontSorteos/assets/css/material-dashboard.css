@@ -4,6 +4,57 @@
  * Copyright 2011-2021 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
+
+#opciones-busqueda {
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--bs-gray-400);
+  background-color: var(--bs-primary);
+  border-radius: 5px;
+  color: var(--bs-gray-600)
+}
+
+#opciones-busqueda option{
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--bs-gray-400);
+  background-color: var(--bs-primary);
+  border-radius: 5px;
+  
+}
+
+
+
+
+
+#btn-busqueda{
+  background-image:url('../img/icons/search.png');
+  background-repeat:no-repeat;
+  height:auto;
+  width:70px;
+  background-size: 20px 20px;
+  background-position:center;
+  background-color: var(--bs-primary);
+  border-width: 0px;
+  border-style: solid;
+  border-color: var(--bs-gray-500);
+  border-radius: 5px;
+}
+
+#btn-busqueda:hover{
+  background-image:url('../img/icons/search.png');
+  background-repeat:no-repeat;
+  height:auto;
+  width:70px;
+  background-size: 20px 20px;
+  background-position:center;
+  background-color: var(--bs-gray-900);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--bs-gray-500);
+  border-radius: 5px;
+}
+
 :root {
   --bs-blue: #63B3ED;
   --bs-indigo: #596CFF;
