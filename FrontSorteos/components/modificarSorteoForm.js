@@ -4,6 +4,7 @@ class ModificarSorteoForm extends HTMLElement{
     }
 
     connectedCallback() {
+        
         this.attachShadow({ mode: "open" });
         this.shadowRoot.innerHTML = `
                 <div class="formulario">
@@ -69,6 +70,7 @@ class ModificarSorteoForm extends HTMLElement{
             </div>
         `
         this.#agregarEstilo();
+        this.#llenarForm();
     }
 
     #agregarEstilo() {
@@ -78,30 +80,44 @@ class ModificarSorteoForm extends HTMLElement{
         link.setAttribute("href", "../assets/css/material-dashboard.css?v=3.0.0");
         this.shadowRoot.appendChild(link);
     }
-   
+
+    #llenarForm(){
+        document.addEventListener('DOMContentLoaded', (e) =>  {
+            e.preventDefault();
+            let url = new URL(window.location.href);
+            let id = url.searchParams.get("id");            
+            fetch(`http://localhost:3000/sorteo/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJQYWNvIiwiY29ycmVvIjoiMTIzNEBob3RtYWkuY29tIiwiZGlyZWNjaW9uIjoiYXNkIiwidGVsZWZvbm8iOiIxMjI0MTEzIiwiY2l1ZGFkIjoiTmFybmlhIiwiZXN0YWRvIjoiZGUgbWV4aWNvIiwic29ydGVvcyI6W119.SiUEOo9A-9FyBoOC-Pdc4I3pTUjwM3sjmYddyfieEHg/${id}`)
+            .then((response) => response.json())
+            .then((json) => {                        
+
+                let sorteo = json['data']    
+        
+                let titulo = sorteo['titulo'];
+                let descripcion = sorteo['descripcion']
+                let numMin = sorteo['numMin'];
+                let numMax = sorteo['numMax'];
+                let precioNumeros = sorteo['precioNumeros'];
+                let diasLimiteApartado = sorteo['diasLimiteApartado'];
+                let tiempoRecordatorio = sorteo['tiempoRecordatorio'];
+                let fechaSorteo = sorteo['fechaSorteo'].substring(0,10);
+                let fechaInicioVenta = sorteo['fechaInicioVenta'].substring(0,10);       
+                let fechaFinal = sorteo['fechaFinVenta'].substring(0,10);
+
+                this.shadowRoot.querySelector('#nombre').value = titulo;
+                this.shadowRoot.querySelector('#descripcion').value = descripcion;
+                this.shadowRoot.querySelector('#numMin').value = numMin;
+                this.shadowRoot.querySelector('#numMax').value = numMax;
+                this.shadowRoot.querySelector('#precioNumeros').value = precioNumeros;
+                this.shadowRoot.querySelector('#tiempoApartado').value = diasLimiteApartado;
+                this.shadowRoot.querySelector('#tiempoNotificaciones').value = tiempoRecordatorio;
+                this.shadowRoot.querySelector('#inicioVenta').value = fechaInicioVenta;
+                this.shadowRoot.querySelector('#fechaSorteo').value = fechaSorteo;
+                this.shadowRoot.querySelector('#finalVenta').value = fechaFinal;
+            });
+        
+        }),false;
+    }
+
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    fetch('http://localhost:3000/sorteo/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJQYWNvIiwiY29ycmVvIjoiMTIzNEBob3RtYWkuY29tIiwiZGlyZWNjaW9uIjoiYXNkIiwidGVsZWZvbm8iOiIxMjI0MTEzIiwiY2l1ZGFkIjoiTmFybmlhIiwiZXN0YWRvIjoiZGUgbWV4aWNvIiwic29ydGVvcyI6W119.SiUEOo9A-9FyBoOC-Pdc4I3pTUjwM3sjmYddyfieEHg/6196ad25c19acb5f185f23c0')
-    .then((response) => response.json())
-    .then((json) => {
-        let titulo = json[0].titulo;
-        let descripcion = json[0].descripcion;
-        let numMin = json[0].numMin;
-        let numMax = json[0].numMax;
-        let precioNumeros = json[0].precioNumeros;
-        let diasLimiteApartado = json[0].diasLimiteApartado;
-        let tiempoRecordatorio = json[0].tiempoRecordatorio;
-
-        this.shadowRoot.querySelector('#nombre') = titulo;
-        this.shadowRoot.querySelector('#descripcion') = descripcion;
-        this.shadowRoot.querySelector('#numMin') = numMin;
-        this.shadowRoot.querySelector('#numMax') = numMax;
-        this.shadowRoot.querySelector('#precioBoletos') = precioNumeros;
-        this.shadowRoot.querySelector('#tiempoApartado') = diasLimiteApartado;
-        this.shadowRoot.querySelector('#tiempoNotificaciones') = tiempoRecordatorio;
-    });
-
-}),false;
 
 window.customElements.define("modificar-sorteo-form", ModificarSorteoForm);

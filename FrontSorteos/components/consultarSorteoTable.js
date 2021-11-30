@@ -98,6 +98,7 @@ class SorteoTable extends HTMLElement{
     .then(function (data) { 
       
       let sorteos = data['data'];
+      console.log(data);
       let contador = 1;
       for (let s of sorteos) {
 
@@ -125,7 +126,7 @@ class SorteoTable extends HTMLElement{
               </div>
             </td>
             <td class="align-middle">
-              <a id="link-${contador}" href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+              <a id="link-${contador}" href="../views/modificarSorteo.html?id=${s['_id']}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
                 Edit
               </a>
             </td>
@@ -214,7 +215,7 @@ class SorteoTable extends HTMLElement{
                   </div>
                 </td>
                 <td class="align-middle">
-                  <a id="link-${contador}" href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                  <a id="link-${contador}" href="../views/modificarSorteo.html?id=${s['_id']}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
                     Edit
                   </a>
                 </td>
