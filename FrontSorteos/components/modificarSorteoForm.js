@@ -92,7 +92,7 @@ class ModificarSorteoForm extends HTMLElement{
             .then((json) => {                        
 
                 let sorteo = json['data']    
-        
+                console.log(sorteo);
                 let titulo = sorteo['titulo'];
                 let descripcion = sorteo['descripcion']
                 let numMin = sorteo['numMin'];
@@ -114,9 +114,38 @@ class ModificarSorteoForm extends HTMLElement{
                 this.shadowRoot.querySelector('#inicioVenta').value = fechaInicioVenta;
                 this.shadowRoot.querySelector('#fechaSorteo').value = fechaSorteo;
                 this.shadowRoot.querySelector('#finalVenta').value = fechaFinal;
-            });
+
+                console.log();
+                this.#restricciones(sorteo);
+            });            
         
         }),false;
+    }
+
+    #restricciones(sorteo){
+        let estado = sorteo['estadoSorteo'];
+        let boletos = sorteo['boletos'];
+
+        if(estado == 'vigente' && boletos.length === 0){
+            this.shadowRoot.querySelector('#numMin').readOnly = true;
+            this.shadowRoot.querySelector('#numMax').readOnly = true;
+            this.shadowRoot.querySelector('#precioNumeros').readOnly = true;
+            this.shadowRoot.querySelector('#inicioVenta').readOnly = true;
+            this.shadowRoot.querySelector('#fechaSorteo').readOnly = true;
+            this.shadowRoot.querySelector('#finalVenta').readOnly = true;
+        }
+        if(estado == 'finalizado' && boletos.length === 0){
+            this.shadowRoot.querySelector('#nombre').readOnly = true;
+                this.shadowRoot.querySelector('#descripcion').readOnly = true;
+                this.shadowRoot.querySelector('#numMin').readOnly = true;
+                this.shadowRoot.querySelector('#numMax').readOnly = true;
+                this.shadowRoot.querySelector('#precioNumeros').readOnly = true;
+                this.shadowRoot.querySelector('#tiempoApartado').readOnly = true;
+                this.shadowRoot.querySelector('#tiempoNotificaciones').readOnly = true;
+                this.shadowRoot.querySelector('#inicioVenta').readOnly = true;
+                this.shadowRoot.querySelector('#fechaSorteo').readOnly = true;
+                this.shadowRoot.querySelector('#finalVenta').readOnly = true;
+        }
     }
 
     #modificarSorteo() {        
@@ -158,7 +187,7 @@ class ModificarSorteoForm extends HTMLElement{
             if (fechaInicioVenta == "" || fechaFinVenta == "" || fechaSorteo == "" || fechaCreacion == "") {
                 return false;
             }
-            if (fechaCreacion > fechaSorteo || fechaCreacion > fechaInicioVenta || fechaCreacion > fechaFinVenta) {
+            if (fecha > fechaSorteo || fecha > fechaInicioVenta || fecha > fechaFinVenta) {
                 alert("Las fechas deben de ser superiores a la fecha actual")
                 return false;
             }

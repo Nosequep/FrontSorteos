@@ -1,13 +1,11 @@
+class SorteoTable extends HTMLElement {
+  constructor() {
+    super();
+  }
 
-
-class SorteoTable extends HTMLElement{
-    constructor(){
-        super();
-    }
-
-    connectedCallback(){
-        this.attachShadow({ mode: "open" });
-        this.shadowRoot.innerHTML = `
+  connectedCallback() {
+    this.attachShadow({ mode: "open" });
+    this.shadowRoot.innerHTML = `
         <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <div class="container-fluid py-4">
           <div class="row">
@@ -26,6 +24,7 @@ class SorteoTable extends HTMLElement{
                               <select name="select" id = "opciones-busqueda">
                                 <option value="id" selected>ID</option>
                                 <option value="titulo" >Título</option>
+                                <option value="estado" >Estado</option>
                               </select>
                               <input type="text" id="texto-busqueda" class="form-control" placeholder="Buscar"/>
                               <input type="button" id= "btn-busqueda"/>
@@ -40,6 +39,7 @@ class SorteoTable extends HTMLElement{
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Título</th>
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"">Cantidad de boletos</th>
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"">Costo por boleto</th>
+                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"">Estado</th>
                           <th class="text-secondary opacity-7"></th>
                         </tr>
                       </thead>
@@ -72,11 +72,11 @@ class SorteoTable extends HTMLElement{
       <script async defer src="https://buttons.github.io/buttons.js"></script>
       <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
       <script src="../assets/js/material-dashboard.min.js?v=3.0.0"></script>
-        `
-      this.#agregarEstilo();
-      this.#buscarSorteos();
-      this.#buscarSorteosAtributo();
-    }
+        `;
+    this.#agregarEstilo();
+    this.#buscarSorteos();
+    this.#buscarSorteosAtributo();
+  }
 
   #agregarEstilo() {
     let link = document.createElement("link");
@@ -88,31 +88,31 @@ class SorteoTable extends HTMLElement{
 
   #buscarSorteos() {
     let elementTable = this.shadowRoot.querySelector("#body-table");
-    fetch('http://localhost:3000/sorteos/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJQYWNvIiwiY29ycmVvIjoiMTIzNEBob3RtYWkuY29tIiwiZGlyZWNjaW9uIjoiYXNkIiwidGVsZWZvbm8iOiIxMjI0MTEzIiwiY2l1ZGFkIjoiTmFybmlhIiwiZXN0YWRvIjoiZGUgbWV4aWNvIiwic29ydGVvcyI6W119.SiUEOo9A-9FyBoOC-Pdc4I3pTUjwM3sjmYddyfieEHg', {
-      method: 'GET',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-    })
-    .then(response => response.json())
-    .then(function (data) { 
-      
-      let sorteos = data['data'];
-      console.log(data);
-      let contador = 1;
-      for (let s of sorteos) {
-
-        let cantBoletos = s['numMax']-(s['numMin']-1);
-        elementTable.innerHTML += `
+    fetch(
+      "http://localhost:3000/sorteos/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJQYWNvIiwiY29ycmVvIjoiMTIzNEBob3RtYWkuY29tIiwiZGlyZWNjaW9uIjoiYXNkIiwidGVsZWZvbm8iOiIxMjI0MTEzIiwiY2l1ZGFkIjoiTmFybmlhIiwiZXN0YWRvIjoiZGUgbWV4aWNvIiwic29ydGVvcyI6W119.SiUEOo9A-9FyBoOC-Pdc4I3pTUjwM3sjmYddyfieEHg",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then(function (data) {
+        let sorteos = data["data"];        
+        let contador = 1;
+        for (let s of sorteos) {
+          let cantBoletos = s["numMax"] - (s["numMin"] - 1);
+          elementTable.innerHTML += `
           <tr>
             <td>
               <div class="d-flex px-2 py-1">
-                <p class="text-xs font-weight-bold mb-0">${s['_id']}</p>
+                <p class="text-xs font-weight-bold mb-0">${s["_id"]}</p>
               </div>
             </td>
             <td>
               <div class="d-flex px-2 py-1">
-                <p class="text-xs font-weight-bold mb-0">${s['titulo']}</p>
+                <p class="text-xs font-weight-bold mb-0">${s["titulo"]}</p>
               </div>
             </td>
             <td >
@@ -122,30 +122,34 @@ class SorteoTable extends HTMLElement{
             </td>
             <td>
               <div class="d-flex px-2 py-1">
-                <p class="text-xs font-weight-bold mb-0">${s['precioNumeros']}</p>
+                <p class="text-xs font-weight-bold mb-0">${s["precioNumeros"]}</p>
+              </div>
+            </td>
+            <td>
+              <div class="d-flex px-2 py-1">
+                <p class="text-xs font-weight-bold mb-0">${s["estadoSorteo"]}</p>
               </div>
             </td>
             <td class="align-middle">
-              <a id="link-${contador}" href="../views/modificarSorteo.html?id=${s['_id']}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+              <a id="link-${contador}" href="../views/modificarSorteo.html?id=${s["_id"]}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
                 Edit
               </a>
             </td>
-          </tr>
-        `  
-        contador++;
-      }
-      
-    }).catch(function (error) {
-      console.warn('Something went wrong.', error);
- 
-    });
+          </tr>          
+        `;               
+          contador++;
+        }        
+      })
+      .catch(function (error) {
+        console.warn("Something went wrong.", error);
+      });
   }
 
   #buscarSorteosAtributo() {
     const btn = this.shadowRoot.querySelector("#btn-busqueda");
     let elementTable = this.shadowRoot.querySelector("#body-table");
-    let elementCombo = this.shadowRoot.querySelector("#opciones-busqueda")
-    let elementTexto = this.shadowRoot.querySelector("#texto-busqueda")
+    let elementCombo = this.shadowRoot.querySelector("#opciones-busqueda");
+    let elementTexto = this.shadowRoot.querySelector("#texto-busqueda");
 
     let mensajeSorteosVacios = `
       <tr>
@@ -154,54 +158,57 @@ class SorteoTable extends HTMLElement{
           <h3>No se encontró sorteo</h3>
         </div>
       </tr>
-    `  
-    btn.addEventListener('click', () => {
-      elementTable.innerHTML = ``  
-      let peticion = 'http://localhost:3000/';
-      let jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJQYWNvIiwiY29ycmVvIjoiMTIzNEBob3RtYWkuY29tIiwiZGlyZWNjaW9uIjoiYXNkIiwidGVsZWZvbm8iOiIxMjI0MTEzIiwiY2l1ZGFkIjoiTmFybmlhIiwiZXN0YWRvIjoiZGUgbWV4aWNvIiwic29ydGVvcyI6W119.SiUEOo9A-9FyBoOC-Pdc4I3pTUjwM3sjmYddyfieEHg/'
-      if(elementCombo.value == "id"){
-        peticion += 'sorteo/'
-    
-      }else if(elementCombo.value == "titulo"){
-        peticion += 'sorteoTitulo/'  
+    `;
+    btn.addEventListener("click", () => {
+      elementTable.innerHTML = ``;
+      let peticion = "http://localhost:3000/";
+      let jwt =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJQYWNvIiwiY29ycmVvIjoiMTIzNEBob3RtYWkuY29tIiwiZGlyZWNjaW9uIjoiYXNkIiwidGVsZWZvbm8iOiIxMjI0MTEzIiwiY2l1ZGFkIjoiTmFybmlhIiwiZXN0YWRvIjoiZGUgbWV4aWNvIiwic29ydGVvcyI6W119.SiUEOo9A-9FyBoOC-Pdc4I3pTUjwM3sjmYddyfieEHg/";
+      if (elementCombo.value == "id") {
+        peticion += "sorteo/";
+      } else if (elementCombo.value == "titulo") {
+        peticion += "sorteoTitulo/";
+      } else if (elementCombo.value == "estado") {
+        peticion += "sorteoEstado/";
       }
 
-      if(elementTexto.value){
+      if (elementTexto.value) {
         peticion += jwt + elementTexto.value;
-      }else{
+      } else {
         this.#buscarSorteos();
         return;
       }
-    
+
       fetch(peticion, {
-        method: 'GET',
+        method: "GET",
         headers: {
-            'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
       })
-      .then(response => response.json())
-      .then(function (data) { 
-        
-        let sorteos = [];
-        if(elementCombo.value == "id"){
-          sorteos.push(data['data']);
-        }else if (elementCombo.value == "titulo"){
-          sorteos = data['data'];
-        }
-        if(sorteos[0] != null){
-          let contador = 1;
-          for (let s of sorteos) {
-            let cantBoletos = s['numMax']-(s['numMin']-1);
-            elementTable.innerHTML += `
+        .then((response) => response.json())
+        .then(function (data) {
+          let sorteos = [];
+          if (elementCombo.value == "id") {
+            sorteos.push(data["data"]);
+          } else if (elementCombo.value == "titulo") {
+            sorteos = data["data"];
+          } else if (elementCombo.value == "estado") {
+            sorteos = data["data"];
+          }
+          if (sorteos[0] != null) {
+            let contador = 1;
+            for (let s of sorteos) {
+              let cantBoletos = s["numMax"] - (s["numMin"] - 1);
+              elementTable.innerHTML += `
               <tr>
                 <td>
                   <div class="d-flex px-2 py-1">
-                    <p class="text-xs font-weight-bold mb-0">${s['_id']}</p>
+                    <p class="text-xs font-weight-bold mb-0">${s["_id"]}</p>
                   </div>
                 </td>
                 <td>
                   <div class="d-flex px-2 py-1">
-                    <p class="text-xs font-weight-bold mb-0">${s['titulo']}</p>
+                    <p class="text-xs font-weight-bold mb-0">${s["titulo"]}</p>
                   </div>
                 </td>
                 <td >
@@ -211,31 +218,32 @@ class SorteoTable extends HTMLElement{
                 </td>
                 <td>
                   <div class="d-flex px-2 py-1">
-                    <p class="text-xs font-weight-bold mb-0">${s['precioNumeros']}</p>
+                    <p class="text-xs font-weight-bold mb-0">${s["precioNumeros"]}</p>
                   </div>
                 </td>
+                <td>
+              <div class="d-flex px-2 py-1">
+                <p class="text-xs font-weight-bold mb-0">${s["estadoSorteo"]}</p>
+              </div>
+            </td>
                 <td class="align-middle">
-                  <a id="link-${contador}" href="../views/modificarSorteo.html?id=${s['_id']}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                  <a id="link-${contador}" href="../views/modificarSorteo.html?id=${s["_id"]}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
                     Edit
                   </a>
                 </td>
               </tr>
-            `  
-            contador++;
+            `;
+              contador++;
+            }
+          } else {
+            elementTable.innerHTML += mensajeSorteosVacios;
           }
-        }else{
+        })
+        .catch(function (error) {
           elementTable.innerHTML += mensajeSorteosVacios;
-        }
-        
-      }).catch(function (error) {
-        elementTable.innerHTML += mensajeSorteosVacios;
-      });
-
+        });
     });
-  
   }
 }
-
-
 
 window.customElements.define("sorteo-table", SorteoTable);
