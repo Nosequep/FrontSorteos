@@ -136,8 +136,12 @@ class SorteoTable extends HTMLElement {
               </a>
             </td>
           </tr>          
-        `;               
-          contador++;
+        `;                  
+        if(s['estadoSorteo'] === 'finalizado'){
+          let id = `#link-${contador}`;          
+          elementTable.querySelector(id).style.visibility = 'hidden';
+        }                             
+        contador++;
         }        
       })
       .catch(function (error) {
@@ -151,11 +155,24 @@ class SorteoTable extends HTMLElement {
     let elementCombo = this.shadowRoot.querySelector("#opciones-busqueda");
     let elementTexto = this.shadowRoot.querySelector("#texto-busqueda");
 
-    let mensajeSorteosVacios = `
-      <tr>
-        
+    let mensajeNoTitulo = `
+      <tr>      
         <div class="d-flex px-2 py-1 ">
-          <h3>No se encontró sorteo</h3>
+          <h3>No se encontró sorteo con ese título</h3>
+        </div>
+      </tr>
+    `;
+    let mensajeNoEstado = `
+      <tr>        
+        <div class="d-flex px-2 py-1 ">
+          <h3>No se encontró sorteo con ese estado (usar "vigente", "finalizado" o "espera")</h3>
+        </div>
+      </tr>
+    `;
+    let mensajeNoID = `
+      <tr>        
+        <div class="d-flex px-2 py-1 ">
+          <h3>No se encontró sorteo con ese ID</h3>
         </div>
       </tr>
     `;
@@ -232,15 +249,21 @@ class SorteoTable extends HTMLElement {
                   </a>
                 </td>
               </tr>
-            `;
-              contador++;
+            `;                   
+            contador++;
             }
           } else {
             elementTable.innerHTML += mensajeSorteosVacios;
           }
         })
         .catch(function (error) {
-          elementTable.innerHTML += mensajeSorteosVacios;
+          if(elementCombo.value == "id"){
+            elementTable.innerHTML += mensajeNoID;
+          }else if(elementCombo.value == "titulo"){
+            elementTable.innerHTML += mensajeNoTitulo;
+          }else if(elementCombo.value == "estado"){
+            elementTable.innerHTML += mensajeNoEstado;
+          }          
         });
     });
   }
