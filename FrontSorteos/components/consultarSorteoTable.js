@@ -1,11 +1,11 @@
 class SorteoTable extends HTMLElement {
-  constructor() {
-    super();
-  }
+    constructor() {
+        super();
+    }
 
-  connectedCallback() {
-    this.attachShadow({ mode: "open" });
-    this.shadowRoot.innerHTML = `
+    connectedCallback() {
+        this.attachShadow({ mode: 'open' });
+        this.shadowRoot.innerHTML = `
         <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <div class="container-fluid py-4">
           <div class="row">
@@ -75,46 +75,49 @@ class SorteoTable extends HTMLElement {
       <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
       <script src="../assets/js/material-dashboard.min.js?v=3.0.0"></script>
         `;
-    this.#agregarEstilo();
-    this.#buscarSorteos();
-    this.#buscarSorteosAtributo();
-  }
+        this.#agregarEstilo();
+        this.#buscarSorteos();
+        this.#buscarSorteosAtributo();
+    }
 
-  #agregarEstilo() {
-    let link = document.createElement("link");
-    link.setAttribute("id", "pagestyle");
-    link.setAttribute("rel", "stylesheet");
-    link.setAttribute("href", "../assets/css/material-dashboard.css?v=3.0.0");
-    this.shadowRoot.appendChild(link);
-  }
+    #agregarEstilo() {
+        let link = document.createElement('link');
+        link.setAttribute('id', 'pagestyle');
+        link.setAttribute('rel', 'stylesheet');
+        link.setAttribute(
+            'href',
+            '../assets/css/material-dashboard.css?v=3.0.0'
+        );
+        this.shadowRoot.appendChild(link);
+    }
 
-  #buscarSorteos() {
-    let elementTable = this.shadowRoot.querySelector("#body-table");
-    fetch(
-      "http://localhost:3000/sorteos/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJQYWNvIiwiY29ycmVvIjoiMTIzNEBob3RtYWkuY29tIiwiZGlyZWNjaW9uIjoiYXNkIiwidGVsZWZvbm8iOiIxMjI0MTEzIiwiY2l1ZGFkIjoiTmFybmlhIiwiZXN0YWRvIjoiZGUgbWV4aWNvIiwic29ydGVvcyI6W119.SiUEOo9A-9FyBoOC-Pdc4I3pTUjwM3sjmYddyfieEHg",
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then(function (data) {
-        let sorteos = data["data"];        
-        let contador = 1;
-        for (let s of sorteos) {
-          let cantBoletos = s["numMax"] - (s["numMin"] - 1);
-          elementTable.innerHTML += `
+    #buscarSorteos() {
+        let elementTable = this.shadowRoot.querySelector('#body-table');
+        fetch(
+            'http://localhost:3000/sorteos/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJQYWNvIiwiY29ycmVvIjoiMTIzNEBob3RtYWkuY29tIiwiZGlyZWNjaW9uIjoiYXNkIiwidGVsZWZvbm8iOiIxMjI0MTEzIiwiY2l1ZGFkIjoiTmFybmlhIiwiZXN0YWRvIjoiZGUgbWV4aWNvIiwic29ydGVvcyI6W119.SiUEOo9A-9FyBoOC-Pdc4I3pTUjwM3sjmYddyfieEHg',
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        )
+            .then((response) => response.json())
+            .then(function (data) {
+                let sorteos = data['data'];
+                let contador = 1;
+                for (let s of sorteos) {
+                    let cantBoletos = s['numMax'] - (s['numMin'] - 1);
+                    elementTable.innerHTML += `
           <tr>
             <td>
               <div class="d-flex px-2 py-1">
-                <p class="text-xs font-weight-bold mb-0">${s["_id"]}</p>
+                <p class="text-xs font-weight-bold mb-0">${s['_id']}</p>
               </div>
             </td>
             <td>
               <div class="d-flex px-2 py-1">
-                <p class="text-xs font-weight-bold mb-0">${s["titulo"]}</p>
+                <p class="text-xs font-weight-bold mb-0">${s['titulo']}</p>
               </div>
             </td>
             <td >
@@ -124,110 +127,111 @@ class SorteoTable extends HTMLElement {
             </td>
             <td>
               <div class="d-flex px-2 py-1">
-                <p class="text-xs font-weight-bold mb-0">${s["precioNumeros"]}</p>
+                <p class="text-xs font-weight-bold mb-0">${s['precioNumeros']}</p>
               </div>
             </td>
             <td>
               <div class="d-flex px-2 py-1">
-                <p class="text-xs font-weight-bold mb-0">${s["estadoSorteo"]}</p>
+                <p class="text-xs font-weight-bold mb-0">${s['estadoSorteo']}</p>
               </div>
             </td>
             <td class="align-middle">
-              <a id="link-${contador}" href="../views/modificarSorteo.html?id=${s["_id"]}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+              <a id="link-${contador}" href="../views/modificarSorteo.html?id=${s['_id']}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
                 Edit
               </a>
             </td>
           </tr>          
-        `;                  
-        if(s['estadoSorteo'] === 'finalizado'){
-          let id = `#link-${contador}`;          
-          elementTable.querySelector(id).style.visibility = 'hidden';
-        }                             
-        contador++;
-        }        
-      })
-      .catch(function (error) {
-        console.warn("Something went wrong.", error);
-      });
-  }
+        `;
+                    if (s['estadoSorteo'] === 'finalizado') {
+                        let id = `#link-${contador}`;
+                        elementTable.querySelector(id).style.visibility =
+                            'hidden';
+                    }
+                    contador++;
+                }
+            })
+            .catch(function (error) {
+                console.warn('Something went wrong.', error);
+            });
+    }
 
-  #buscarSorteosAtributo() {
-    const btn = this.shadowRoot.querySelector("#btn-busqueda");
-    let elementTable = this.shadowRoot.querySelector("#body-table");
-    let elementCombo = this.shadowRoot.querySelector("#opciones-busqueda");
-    let elementTexto = this.shadowRoot.querySelector("#texto-busqueda");
+    #buscarSorteosAtributo() {
+        const btn = this.shadowRoot.querySelector('#btn-busqueda');
+        let elementTable = this.shadowRoot.querySelector('#body-table');
+        let elementCombo = this.shadowRoot.querySelector('#opciones-busqueda');
+        let elementTexto = this.shadowRoot.querySelector('#texto-busqueda');
 
-    let mensajeNoTitulo = `
+        let mensajeNoTitulo = `
       <tr>      
         <div class="d-flex px-2 py-1 ">
           <h3>No se encontró sorteo con ese título</h3>
         </div>
       </tr>
     `;
-    let mensajeNoEstado = `
+        let mensajeNoEstado = `
       <tr>        
         <div class="d-flex px-2 py-1 ">
           <h3>No se encontró sorteo con ese estado (usar "vigente", "finalizado" o "espera")</h3>
         </div>
       </tr>
     `;
-    let mensajeNoID = `
+        let mensajeNoID = `
       <tr>        
         <div class="d-flex px-2 py-1 ">
           <h3>No se encontró sorteo con ese ID</h3>
         </div>
       </tr>
     `;
-    btn.addEventListener("click", () => {
-      elementTable.innerHTML = ``;
-      let peticion = "http://localhost:3000/";
-      let jwt =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJQYWNvIiwiY29ycmVvIjoiMTIzNEBob3RtYWkuY29tIiwiZGlyZWNjaW9uIjoiYXNkIiwidGVsZWZvbm8iOiIxMjI0MTEzIiwiY2l1ZGFkIjoiTmFybmlhIiwiZXN0YWRvIjoiZGUgbWV4aWNvIiwic29ydGVvcyI6W119.SiUEOo9A-9FyBoOC-Pdc4I3pTUjwM3sjmYddyfieEHg/";
-      if (elementCombo.value == "id") {
-        peticion += "sorteo/";
-      } else if (elementCombo.value == "titulo") {
-        peticion += "sorteoTitulo/";
-      } else if (elementCombo.value == "estado") {
-        peticion += "sorteoEstado/";
-      }
+        btn.addEventListener('click', () => {
+            elementTable.innerHTML = ``;
+            let peticion = 'http://localhost:3000/';
+            let jwt =
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJQYWNvIiwiY29ycmVvIjoiMTIzNEBob3RtYWkuY29tIiwiZGlyZWNjaW9uIjoiYXNkIiwidGVsZWZvbm8iOiIxMjI0MTEzIiwiY2l1ZGFkIjoiTmFybmlhIiwiZXN0YWRvIjoiZGUgbWV4aWNvIiwic29ydGVvcyI6W119.SiUEOo9A-9FyBoOC-Pdc4I3pTUjwM3sjmYddyfieEHg/';
+            if (elementCombo.value == 'id') {
+                peticion += 'sorteo/';
+            } else if (elementCombo.value == 'titulo') {
+                peticion += 'sorteoTitulo/';
+            } else if (elementCombo.value == 'estado') {
+                peticion += 'sorteoEstado/';
+            }
 
-      if (elementTexto.value) {
-        peticion += jwt + elementTexto.value;
-      } else {
-        this.#buscarSorteos();
-        return;
-      }
+            if (elementTexto.value) {
+                peticion += jwt + elementTexto.value;
+            } else {
+                this.#buscarSorteos();
+                return;
+            }
 
-      fetch(peticion, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then(function (data) {
-          let sorteos = [];
-          if (elementCombo.value == "id") {
-            sorteos.push(data["data"]);
-          } else if (elementCombo.value == "titulo") {
-            sorteos = data["data"];
-          } else if (elementCombo.value == "estado") {
-            sorteos = data["data"];
-          }
-          if (sorteos[0] != null) {
-            let contador = 1;
-            for (let s of sorteos) {
-              let cantBoletos = s["numMax"] - (s["numMin"] - 1);
-              elementTable.innerHTML += `
+            fetch(peticion, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then((response) => response.json())
+                .then(function (data) {
+                    let sorteos = [];
+                    if (elementCombo.value == 'id') {
+                        sorteos.push(data['data']);
+                    } else if (elementCombo.value == 'titulo') {
+                        sorteos = data['data'];
+                    } else if (elementCombo.value == 'estado') {
+                        sorteos = data['data'];
+                    }
+                    if (sorteos[0] != null) {
+                        let contador = 1;
+                        for (let s of sorteos) {
+                            let cantBoletos = s['numMax'] - (s['numMin'] - 1);
+                            elementTable.innerHTML += `
               <tr>
                 <td>
                   <div class="d-flex px-2 py-1">
-                    <p class="text-xs font-weight-bold mb-0">${s["_id"]}</p>
+                    <p class="text-xs font-weight-bold mb-0">${s['_id']}</p>
                   </div>
                 </td>
                 <td>
                   <div class="d-flex px-2 py-1">
-                    <p class="text-xs font-weight-bold mb-0">${s["titulo"]}</p>
+                    <p class="text-xs font-weight-bold mb-0">${s['titulo']}</p>
                   </div>
                 </td>
                 <td >
@@ -237,38 +241,44 @@ class SorteoTable extends HTMLElement {
                 </td>
                 <td>
                   <div class="d-flex px-2 py-1">
-                    <p class="text-xs font-weight-bold mb-0">${s["precioNumeros"]}</p>
+                    <p class="text-xs font-weight-bold mb-0">${s['precioNumeros']}</p>
                   </div>
                 </td>
                 <td>
               <div class="d-flex px-2 py-1">
-                <p class="text-xs font-weight-bold mb-0">${s["estadoSorteo"]}</p>
+                <p class="text-xs font-weight-bold mb-0">${s['estadoSorteo']}</p>
               </div>
             </td>
                 <td class="align-middle">
-                  <a id="link-${contador}" href="../views/modificarSorteo.html?id=${s["_id"]}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                  <a id="link-${contador}" href="../views/modificarSorteo.html?id=${s['_id']}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
                     Edit
                   </a>
                 </td>
               </tr>
-            `;                   
-            contador++;
-            }
-          } else {
-            elementTable.innerHTML += mensajeSorteosVacios;
-          }
-        })
-        .catch(function (error) {
-          if(elementCombo.value == "id"){
-            elementTable.innerHTML += mensajeNoID;
-          }else if(elementCombo.value == "titulo"){
-            elementTable.innerHTML += mensajeNoTitulo;
-          }else if(elementCombo.value == "estado"){
-            elementTable.innerHTML += mensajeNoEstado;
-          }          
+            `;
+                            if (s['estadoSorteo'] === 'finalizado') {
+                                let id = `#link-${contador}`;
+                                elementTable.querySelector(
+                                    id
+                                ).style.visibility = 'hidden';
+                            }
+                            contador++;
+                        }
+                    } else {
+                        elementTable.innerHTML += mensajeSorteosVacios;
+                    }
+                })
+                .catch(function (error) {
+                    if (elementCombo.value == 'id') {
+                        elementTable.innerHTML += mensajeNoID;
+                    } else if (elementCombo.value == 'titulo') {
+                        elementTable.innerHTML += mensajeNoTitulo;
+                    } else if (elementCombo.value == 'estado') {
+                        elementTable.innerHTML += mensajeNoEstado;
+                    }
+                });
         });
-    });
-  }
+    }
 }
 
-window.customElements.define("sorteo-table", SorteoTable);
+window.customElements.define('sorteo-table', SorteoTable);
