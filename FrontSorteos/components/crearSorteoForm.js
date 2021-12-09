@@ -1,4 +1,5 @@
 class CrearSorteoForm extends HTMLElement {
+
     constructor() {
         super();
     }
@@ -72,26 +73,28 @@ class CrearSorteoForm extends HTMLElement {
         this.#agregarInteraccion();
         this.#cargarImagen();
     }
+
+
+
     #cargarImagen() {
 
         const input = this.shadowRoot.querySelector('#file')
 
-        input.addEventListener('change', function (e) {
-            console.log(this.files[0])
-            e.preventDefault();
-            const reader = new FileReader()
-            reader.onload = function () {
-                const lines = reader.result.split('\n').map(function (line) {
-                    return line.split(',')
-                })
-                const img = new Image()
-                img.src = reader.result
-                console.log(reader.result)
+        input.addEventListener('change', (e) => {
+            if (localStorage.getItem('imagen')) {
+                localStorage.removeItem('imagen')
             }
-            reader.readAsDataURL(input.files[0])
-        }, false)
+            const reader = new FileReader()
+            reader.onload = (e) => {
+                localStorage.setItem('imagen', reader.result);
 
+            }
+            reader.readAsDataURL(input.files[0]);
+        }, false)
     }
+
+
+
     #agregarEstilo() {
         let link = document.createElement("link");
         link.setAttribute("id", "pagestyle");
@@ -115,11 +118,14 @@ class CrearSorteoForm extends HTMLElement {
         const fechaFinVenta = this.shadowRoot.querySelector('#finalVenta');
         let diasLimiteApartado = this.shadowRoot.querySelector('#tiempoApartado');
         let tiempoRecordatorio = this.shadowRoot.querySelector('#tiempoNotificaciones');
+    
         const imagen = this.shadowRoot.querySelector('#file');
         const fecha = new Date();
         const fechaCreacion = fecha.getFullYear() + '-' + (fecha.getMonth() + 1) + '-' + fecha.getDate();
-        const estado = "vigente"
+        let estado = "espera" 
         
+        
+
         const validateNumbers = (numMin, numMax, diasRecordatorio, diasPeriodo) => {
             if (numMin > numMax) {
                 alert("El número mínimo de boletos debe ser menor que el máximo")
@@ -164,16 +170,14 @@ class CrearSorteoForm extends HTMLElement {
         }
 
         btn.addEventListener('click', function () {
-            console.log("bbbb"> "aaaa" )
-            console.log("fecha Crecio" + fechaCreacion)
-            console.log("fecha sorteo" + fechaSorteo.value)
-            console.log("fecha Inicio venta" + fechaInicioVenta.value)
-            console.log("fecha fin venta" + fechaFinVenta.value)
-
-            const validarNumeros = validateNumbers(numMin.value, numMax.value, diasLimiteApartado.value, tiempoRecordatorio.value);
-            const validacionFechas = validateFechas(new Date(fechaInicioVenta.value), new Date(fechaFinVenta.value), new Date(fechaSorteo.value), fechaCreacion);
-            console.log(validarNumeros,"nuer", validacionFechas)
+            const validarNumeros = validateNumbers(parseInt(numMin.value), parseInt(numMax.value), parseInt(diasLimiteApartado.value), parseInt(tiempoRecordatorio.value));
+            const validacionFechas = validateFechas(new Date(fechaInicioVenta.value), new Date(fechaFinVenta.value), new Date(fechaSorteo.value), new Date(fechaCreacion));
             if (validarNumeros && validacionFechas && validateEmpty(titulo.value, descripcion.value)) {
+                let img = "";
+                if (localStorage.getItem('imagen')) {
+                    img = localStorage.getItem('imagen');
+                    localStorage.removeItem('imagen');
+                }
                 fetch('http://localhost:3000/sorteo/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJQYWNvIiwiY29ycmVvIjoiMTIzNEBob3RtYWkuY29tIiwiZGlyZWNjaW9uIjoiYXNkIiwidGVsZWZvbm8iOiIxMjI0MTEzIiwiY2l1ZGFkIjoiTmFybmlhIiwiZXN0YWRvIjoiZGUgbWV4aWNvIiwic29ydGVvcyI6W119.SiUEOo9A-9FyBoOC-Pdc4I3pTUjwM3sjmYddyfieEHg', {
                     method: 'POST',
                     headers: {
@@ -192,18 +196,17 @@ class CrearSorteoForm extends HTMLElement {
                         "fechaFinVenta": fechaFinVenta.value,
                         "diasLimiteApartado": diasLimiteApartado.value,
                         "tiempoRecordatorio": tiempoRecordatorio.value,
-                        "imagen": imagen.files[0].name,
-                        "estadoSorteo": estado
+                        "imagen": img,
+                        "estadoSorteo": estado,
                     })
-
                 })
-                .then(response => response.json())
-                .then(function (data) { 
-                    alert("Se ha guardado con éxito el sorteo.")
-                    form.reset();
-                }).catch(function (error) {
-                    console.warn('Something went wrong.', error);
-                });
+                    .then(response => response.json())
+                    .then(function (data) {
+                        alert("Se ha guardado con éxito el sorteo.")
+                        form.reset();
+                    }).catch(function (error) {
+                        console.warn('Something went wrong.', error);
+                    });
             }
         });
     }

@@ -72,6 +72,24 @@ class ModificarSorteoForm extends HTMLElement{
         this.#agregarEstilo();
         this.#modificarSorteo()
         this.#llenarForm();
+        this.#cargarImagen();
+    }
+
+    #cargarImagen() {
+
+        const input = this.shadowRoot.querySelector('#file')
+
+        input.addEventListener('change', (e) => {
+            if (localStorage.getItem('imagen')) {
+                localStorage.removeItem('imagen')
+            }
+            const reader = new FileReader()
+            reader.onload = (e) => {
+                localStorage.setItem('imagen', reader.result);
+
+            }
+            reader.readAsDataURL(input.files[0]);
+        }, false)
     }
 
     #agregarEstilo() {
@@ -122,6 +140,7 @@ class ModificarSorteoForm extends HTMLElement{
         }),false;
     }
 
+    
     #restricciones(sorteo){
         let estado = sorteo['estadoSorteo'];
         let boletos = sorteo['boletos'];
@@ -175,7 +194,7 @@ class ModificarSorteoForm extends HTMLElement{
             if (fechaInicioVenta == "" || fechaFinVenta == "" || fechaSorteo == "" || fechaCreacion == "") {
                 return false;
             }
-            if (fecha > fechaSorteo || fecha > fechaInicioVenta || fecha > fechaFinVenta) {
+            if (fechaCreacion > fechaSorteo || fechaCreacion > fechaInicioVenta || fechaCreacion > fechaFinVenta) {
                 alert("Las fechas deben de ser superiores a la fecha actual")
                 return false;
             }
@@ -200,12 +219,18 @@ class ModificarSorteoForm extends HTMLElement{
 
         btn.addEventListener('click', function () {
 
-            const validarNumeros = validateNumbers(numMin.value, numMax.value, diasLimiteApartado.value, tiempoRecordatorio.value);
-            const validacionFechas = validateFechas(fechaInicioVenta.value, fechaFinVenta.value, fechaSorteo.value, fechaCreacion);    
+            const validarNumeros = validateNumbers(parseInt(numMin.value), parseInt(numMax.value), parseInt(diasLimiteApartado.value), tiempoRecordatorio.value);
+            const validacionFechas = validateFechas(new Date(fechaInicioVenta.value), new Date(fechaFinVenta.value), new Date(fechaSorteo.value), new Date(fechaCreacion));    
             let url = new URL(window.location.href);
             let id = url.searchParams.get("id");      
 
             if (validarNumeros && validacionFechas && validateEmpty(titulo.value, descripcion.value)) {
+                let img = "";
+                if (localStorage.getItem('imagen')) {
+                    img = localStorage.getItem('imagen');
+                    localStorage.removeItem('imagen');
+                }
+                console.log(img)
                 fetch(`http://localhost:3000/sorteo/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJQYWNvIiwiY29ycmVvIjoiMTIzNEBob3RtYWkuY29tIiwiZGlyZWNjaW9uIjoiYXNkIiwidGVsZWZvbm8iOiIxMjI0MTEzIiwiY2l1ZGFkIjoiTmFybmlhIiwiZXN0YWRvIjoiZGUgbWV4aWNvIiwic29ydGVvcyI6W119.SiUEOo9A-9FyBoOC-Pdc4I3pTUjwM3sjmYddyfieEHg/${id}`, {
                     method: 'PUT',
                     headers: {
@@ -224,7 +249,7 @@ class ModificarSorteoForm extends HTMLElement{
                         "fechaFinVenta": fechaFinVenta.value,
                         "diasLimiteApartado": diasLimiteApartado.value,
                         "tiempoRecordatorio": tiempoRecordatorio.value,
-                        "imagen": imagen,
+                        "imagen": img,
                         "estadoSorteo": estado
                     })
 
@@ -232,7 +257,7 @@ class ModificarSorteoForm extends HTMLElement{
                 .then(response => response.json())
                 .then(function (data) { 
                     alert("Se ha actualizado con éxito el sorteo.")
-                    form.reset();
+                    window.location.href='http://localhost:4000/views/consultarSorteo.html';
                 }).catch(function (error) {
                     console.warn('Something went wrong.', error);
                 });

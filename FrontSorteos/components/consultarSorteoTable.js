@@ -19,7 +19,9 @@ class SorteoTable extends HTMLElement {
                 <div class="card-body px-0 pb-2">
                   <div class="table-responsive p-0">
                     <div class = "align-items-center mb-0">
+                        <a class = "mx-5" id= "btn-regresar" href="http://localhost:4000/">Regresar</a>
                         <div class="ms-md-auto pe-md-3 d-flex align-items-center my-3 mx-3 w-50">
+                        
                             <div class="input-group input-group-outline is-focused">
                               <select name="select" id = "opciones-busqueda">
                                 <option value="id" selected>ID</option>
